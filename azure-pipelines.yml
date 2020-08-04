@@ -17,9 +17,9 @@ variables:
 
 steps:
 - task: DownloadSecureFile@1
-  name: mySecureFile 
+  name: 'mySecureFile' 
   inputs:
-    secureFile: averpix-rsa
+    secureFile: 'averpix-rsa'
 
 - task: InstallSSHKey@0
   inputs:
