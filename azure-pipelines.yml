@@ -23,9 +23,6 @@ steps:
 
 - script: |
     git config --global url."git@github.com:quayilab/petrinet".insteadOf "https://github.com/quayilab/petrinet"
-    go test -v -coverprofile=coverage.txt -covermode count .
-  workingDirectory: '$(modulePath)'
-  displayName: 'Run unit test'
 
 - task: GoTool@0
   inputs:
@@ -38,7 +35,7 @@ steps:
 - task: Go@0
   inputs:
     command: 'test'
-    arguments: '-v'
+    arguments: '-v -coverprofile=coverage.txt -covermode count .'
     workingDirectory: '$(modulePath)'
 #- task: Go@0
 #  inputs:
