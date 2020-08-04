@@ -16,9 +16,9 @@ variables:
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
 - task: DownloadSecureFile@1
-  name: mySecureFile # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+  name: mySecureFile 
   inputs:
-    secureFile: averpix-rsa # The file name or GUID of the secure file
+    secureFile: averpix-rsa
 
 - task: InstallSSHKey@0
   inputs:
