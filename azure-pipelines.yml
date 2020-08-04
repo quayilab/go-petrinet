@@ -15,6 +15,42 @@ variables:
   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
+- task: InstallSSHKey@0
+  inputs:
+    knownHostsEntry: github.com,13.250.177.223 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+    sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhevOFxSCRaXqWa2uuKiLGg9lP1LSIJV3YCmwezlEqRCXhpTc1RavcmIHMo83o8SEE4DO1k7hHRS0Zv7OeR/g4ubV1bhT/Gbrv7ujSeu6JCnNQ83F/21RPWwT/C80ZMO1XH5wHeUjLE7HX6uAYYZwPFVWNTavdv6hOGKfbXyZ+3jT1HKbCr5sJ5a2n9gLpkqLCfudzVi6+xsJUKYvHeqLWrKLXdoP5w5xovVGGkFYd0wyabpXbYPBnF+XiPC1MKiFG2gJd3pSmvy7yEkcuhbbEJOtd3kMo9oPXnpn1QnVQEmSM6q0sxmaUeFyb+s7igqM74Dw2yEyzt0JX3bcmdE9n averpix@gmail.com
+    sshPassphrase: @gungPrakasy4
+    sshKeySecureFile: -----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,7EE6D4AFD5C92B69DD3EC3CFCCC1176A
+
+redVeJab9E3BOc0+eo9rCcGISb0QUd9PTrQGQH3wApGIIEZcJzuD+roRLADin+Zl
+Kx0tfXOkVjChuRMRwNtlpCX962SfVNQQPkZRvtcNcb+l6Iku7pT38psFJ4vYdwc4
+62X9X/5krPidXDV4NFl13MIS4KGznJMph62e+ryKmGIS9IkRcDZn6+S64mA/d4YN
+IbnLGdAPM7B5CAsg+Z1wx9qc53AreK2yzcnfCV08B/Z6Sc1GxAVzDhC9BhXN7wiG
+laAabvIqMQSrt6y2Cb2fSPoCTvZTrjL1LQX+Ky10WCrpAz7QJixwdkjsagRETjIN
+TjGQyxK5O1Kh+WKEe5oFTWCGqcsxRhh1FV1LzUfu0Q4ox2mRUIQfMbWEZbHHV/F5
+xZ9wlIfnO7Jp5YpNJ52KEDXxrRsCtng2vGBsC4J+0bB+hNNfgpbph0Vf/LUGyyy1
+dVgyQDup9xVLF4kQyjS4fGVTuk1DSrwL4NKwF1lKJ6gs3nobTXPaL3V8b+pUkvRJ
+E3TZP0GqBo414jStss7hWNOac5XgI32VsKo1xyQGxvnCCnCMbqdYN5t3aIVzz00u
+xUfIruR1T82EmNX5uDo9MvGej2VsnDSX0NuuUnVtyELd1ibAFw7wrqjPYaFnEBey
+yZb7r5FLArvu8fusiBogMGb1uPxKpCEpLaNJ29N7wT+ERQIKyY0KDKnVrcb669zY
+ofxkOedEyyxmTjwPDnV0XoimIiyCYUsCvwzGvXOhAkeuvW8H0zfyDu8OFUedxcyB
+G2dyiHp895XlZoLa2BC6DPLSZNyn4lTjCPe0YFCIhlB/0TXEGMpkdHT2z9lK19Gf
+9rKAg7nGVVyFlWYj3oZW+tThNChUioYpH+FoLG7Rh4VkgoeKzy0SqbdpKExN0tuT
+8T4sNiZTFyaySdNjbGoUJFtwF9edZjmKPNIChl5DNHv1eDYYkUBeogdrcmULnhAs
+GLhZKXEmc4oDbjQzXpH79UXAFIj4DYGHLJbqMnizhZjNLaWQpCNTlTp+MnQx3NRc
+AOCQlK8lcTBFJ7TOn0pkwSp8Zh3oNmsiFYIr+C7lpyxwwG82isPZS0Tom2qrlWjt
+aDPN1YrMvC4oam4Dg5RDKDQkE1nCKJHr/CmU1B2SIxBsbfOsJzRRakX6aseDqI5i
+zB2Dh3G2jyKdeNGF2hcLBq15t4UfPYxKGjvjpVOb5ZA2O2kEWAM/dJHkvbXCw81y
+g2piSNPyI7trjMn/RC7hTqz3Ww77eazG/wcRQz32t0rWoyr0+KeslwOPWoL604Fb
+T9yQyIO186Ha+0CPSpX7fi31EwWgU4PoIOWEIoM5RNyHYcFlsbpkhsmYjr568MEN
+ZGOpPQGR6UvOiSTlQoh2fdhEmtjaKMyZHE3rlNEpklbMndtaqmCvdAn35JzrWLnw
+0b64U+jruxOEy9z9e2foFPH16hIgeYg1w8M3pNwJZbVjaLKxefFOe8XWQ0x90+Em
+sX7J4uNiELpXVf2jaifY+7QG8W/O10lUGhqxbhWQIHiJ6tl33NBXDvL+zY9BVURv
+bUG4Ax/B3AgBE6i2kia8+x4qKQzxCvnJsfTIIkXITR+5o0Kk9CHY/Iu2CpH6SP0w
+-----END RSA PRIVATE KEY-----
+
 steps:
 - script: |
     mkdir -p '$(GOBIN)'
@@ -27,13 +63,22 @@ steps:
     echo '##vso[task.prependpath]$(GOROOT)/bin'
   displayName: 'Set up the Go workspace'
 
+#- script: |
+#    go version
+#    go get -v -t -d ./...
+#    if [ -f Gopkg.toml ]; then
+#        curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+#        dep ensure
+#    fi
+#    go build -v .
+#  workingDirectory: '$(modulePath)'
+#  displayName: 'Get dependencies, then build'
+
 - script: |
-    go version
-    go get -v -t -d ./...
-    if [ -f Gopkg.toml ]; then
-        curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-        dep ensure
-    fi
-    go build -v .
+    go test -v -coverprofile=coverage.txt -covermode count .
+    gocov convert coverage.txt > coverage.json
+    gocov-xml < coverage.json > coverage.xml
+    mkdir coverage
+    gocov-html < coverage.json > coverage/index.html
   workingDirectory: '$(modulePath)'
-  displayName: 'Get dependencies, then build'
+  displayName: 'Run unit test'
