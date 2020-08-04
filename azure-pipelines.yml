@@ -26,7 +26,7 @@ steps:
 
 - task: GoTool@0
   inputs:
-    version: '1.13.5'
+    version: '1.14'
 - task: Go@0
   inputs:
     command: 'get'
@@ -36,7 +36,7 @@ steps:
   inputs:
     command: 'test'
     arguments: '-v'
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
 #- task: Go@0
 #  inputs:
 #    command: 'build'
