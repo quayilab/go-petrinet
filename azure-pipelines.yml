@@ -35,8 +35,12 @@ steps:
 - task: Go@0
   inputs:
     command: 'test'
-    arguments: '-v'
+    arguments: '-v -coverprofile=coverage.txt -covermode count .'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo' # Options: cobertura, jaCoCo
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage.txt'
 #- task: Go@0
 #  inputs:
 #    command: 'build'
