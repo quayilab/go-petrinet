@@ -16,10 +16,10 @@ variables:
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
 steps:
-- task: DownloadSecureFile@1
-  name: myPrivateKey
-  inputs:
-    secureFile: 'averpix-rsa'
+#- task: DownloadSecureFile@1
+#  name: myPrivateKey
+#  inputs:
+#    secureFile: 'averpix-rsa'
 
 - task: InstallSSHKey@0
   inputs:
