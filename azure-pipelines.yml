@@ -17,7 +17,7 @@ variables:
 
 steps:
 - task: DownloadSecureFile@1
-  name: 'mySecureFile' 
+  name: mySecureFile
   inputs:
     secureFile: 'averpix-rsa'
 
@@ -26,7 +26,7 @@ steps:
     knownHostsEntry: 'github.com,13.250.177.223 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhevOFxSCRaXqWa2uuKiLGg9lP1LSIJV3YCmwezlEqRCXhpTc1RavcmIHMo83o8SEE4DO1k7hHRS0Zv7OeR/g4ubV1bhT/Gbrv7ujSeu6JCnNQ83F/21RPWwT/C80ZMO1XH5wHeUjLE7HX6uAYYZwPFVWNTavdv6hOGKfbXyZ+3jT1HKbCr5sJ5a2n9gLpkqLCfudzVi6+xsJUKYvHeqLWrKLXdoP5w5xovVGGkFYd0wyabpXbYPBnF+XiPC1MKiFG2gJd3pSmvy7yEkcuhbbEJOtd3kMo9oPXnpn1QnVQEmSM6q0sxmaUeFyb+s7igqM74Dw2yEyzt0JX3bcmdE9n averpix@gmail.com'
     sshPassphrase: '@gungPrakasy4'
-    sshKeySecureFile: $(Agent.TempDirectory)'mySecureFile'
+    sshKeySecureFile: $(mySecureFile.secureFilePath)
 
 - script: |
     mkdir -p '$(GOBIN)'
