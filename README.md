@@ -1,3 +1,3 @@
-[![Build Status](https://dev.azure.com/quayilab-dev/petrinet/_apis/build/status/quayilab.petrinet?branchName=master)](https://dev.azure.com/quayilab-dev/petrinet/_build/latest?definitionId=1&branchName=master)
+<a href='https://github.com/jpoles1/gopherbadger' target='_blank'>![gopherbadger-tag-do-not-edit](https://img.shields.io/badge/Go%20Coverage-49%25-brightgreen.svg?longCache=true&style=flat)</a>
 # petrinet
 A simple library for Go 
