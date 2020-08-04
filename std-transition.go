@@ -4,8 +4,10 @@ import (
 	"fmt"
 )
 
+// OnExec :
 type OnExec func(tkns map[int][]TokenIntf, outTkns *map[int][]TokenIntf)
 
+// Transition :
 type Transition struct {
 	Node
 	activationTreshold map[int]int
@@ -91,6 +93,7 @@ func (t *Transition) ConnectOutput(s StateIntf) {
 	t.outputStates[s.GetStateID()] = s
 }
 
+// NewTransition :
 func NewTransition(net NetIntf, id, label, desc string, onexec OnExec) (result TransitionIntf) {
 	result = &Transition{
 		Node:               *NewNode(net, id, label, desc, ElementTypeNodeTransition).(*Node),

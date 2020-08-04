@@ -162,35 +162,35 @@ func initConnetTransitionState() {
 }
 
 func TestIncorrectElements(t *testing.T) {
-	s:= &State{}
+	s := &State{}
 	*s = *expState01
 	s.Node.Element.id = "different-id"
 	got := NewState(expNet, "testing-state-01", "Testing State #01", "description of Testing State #01", 1000, 10)
 	if result, reason := s.IsIdentic(got); result {
 		t.Errorf("result is incorrect: %s\n  want : %v\n   got : %v\n", reason, *s, *got.(*State))
 	}
-	s= &State{}
+	s = &State{}
 	*s = *expState01
 	s.Node.Element.typ = ElementTypeNet
 	got = NewState(expNet, "testing-state-01", "Testing State #01", "description of Testing State #01", 1000, 10)
 	if result, reason := s.IsIdentic(got); result {
 		t.Errorf("result is incorrect: %s\n  want : %v\n   got : %v\n", reason, *s, *got.(*State))
 	}
-	s= &State{}
+	s = &State{}
 	*s = *expState01
 	s.Node.Element.label = "different-label"
 	got = NewState(expNet, "testing-state-01", "Testing State #01", "description of Testing State #01", 1000, 10)
 	if result, reason := s.IsIdentic(got); result {
 		t.Errorf("result is incorrect: %s\n  want : %v\n   got : %v\n", reason, *s, *got.(*State))
 	}
-	s= &State{}
+	s = &State{}
 	*s = *expState01
 	s.Node.Element.desc = "different-desc"
 	got = NewState(expNet, "testing-state-01", "Testing State #01", "description of Testing State #01", 1000, 10)
 	if result, reason := s.IsIdentic(got); result {
 		t.Errorf("result is incorrect: %s\n  want : %v\n   got : %v\n", reason, *s, *got.(*State))
 	}
-	s= &State{}
+	s = &State{}
 	*s = *expState01
 	s.Node.Element.Enable()
 	got = NewState(expNet, "testing-state-01", "Testing State #01", "description of Testing State #01", 1000, 10)
@@ -206,7 +206,7 @@ func TestIncorrectElements(t *testing.T) {
 
 func TestNode(t *testing.T) {
 	initConnetStateTransition()
-	s:= &State{}
+	s := &State{}
 	*s = *expState01
 	//s.Node.interior = &Net{}
 	s.Node.outputs = append(s.Node.outputs, &Node{})

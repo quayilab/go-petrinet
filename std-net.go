@@ -2,9 +2,10 @@ package gopetrinet
 
 import (
 	"fmt"
-	_ "sync"
+	// "sync"
 )
 
+// Net struct
 type Net struct {
 	Element
 	nodes       []NodeIntf
@@ -74,7 +75,7 @@ func (n *Net) GetTransition(index int) (result TransitionIntf) {
 	return
 }
 
-// GetStates :
+// GetTransitions :
 func (n *Net) GetTransitions() (result []TransitionIntf) {
 	result = n.transitions
 	return
@@ -187,6 +188,7 @@ func (n *Net) AddTokenToState(s StateIntf, tokens ...TokenIntf) {
 
 }
 
+// NewNet :
 func NewNet(id, label, desc string) (result NetIntf) {
 	result = &Net{
 		nodes:       []NodeIntf{},

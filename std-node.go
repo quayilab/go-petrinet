@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// Node :
 type Node struct {
 	Element
 	inputs   []NodeIntf
@@ -68,9 +69,9 @@ func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
 		return
 	}
 	if n1.GetInputCount() != len(n.inputs) {
-		reason = "input lenght not equal"
+		reason = "input length not equal"
 	} else if n1.GetOutputCount() != len(n.outputs) {
-		reason = "output lenght not equal"
+		reason = "output length not equal"
 	} else {
 		input := n1.GetInputs()
 		for i, in := range n.inputs {
@@ -89,7 +90,7 @@ func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
 	}
 	result = result && (n1.GetInterior() == n.interior)
 	if result && n1.GetInterior() == n.interior {
-		if n.interior != nil {			
+		if n.interior != nil {
 			if n1.GetInterior().(ElementIntf).GetID() != n.interior.(ElementIntf).GetID() {
 				reason = "interior not equal"
 			}
@@ -98,6 +99,7 @@ func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
 	return
 }
 
+// NewNode :
 func NewNode(net NetIntf, id, label, desc string, typ int) (result NodeIntf) {
 	result = &Node{
 		Element:  *NewElement(net, id, label, desc, typ).(*Element),

@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// State :
 type State struct {
 	Node
 	capacity int
@@ -87,6 +88,7 @@ func (s *State) IsIdentic(s1 StateIntf) (result bool, reason string) {
 	return
 }
 
+// NewState :
 func NewState(net NetIntf, id, label, desc string, stateid, capacity int) (result StateIntf) {
 	result = &State{
 		Node:     *NewNode(net, id, label, desc, ElementTypeNodeState).(*Node),

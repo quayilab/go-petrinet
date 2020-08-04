@@ -1,5 +1,6 @@
 package gopetrinet
 
+// Element struct ...
 type Element struct {
 	id      string
 	label   string
@@ -74,6 +75,7 @@ func (e *Element) IsIdentic(e1 ElementIntf) (result bool, reason string) {
 	return
 }
 
+// NewElement function
 func NewElement(net NetIntf, id, label, desc string, typ int) (result ElementIntf) {
 	result = &Element{
 		id:      id,
