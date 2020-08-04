@@ -53,9 +53,5 @@ steps:
 - script: |
     git config --global url."git@github.com:quayilab/petrinet".insteadOf "https://github.com/quayilab/petrinet"
     go test -v -coverprofile=coverage.txt -covermode count .
-    gocov convert coverage.txt > coverage.json
-    gocov-xml < coverage.json > coverage.xml
-    mkdir coverage
-    gocov-html < coverage.json > coverage/index.html
   workingDirectory: '$(modulePath)'
   displayName: 'Run unit test'
