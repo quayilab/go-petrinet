@@ -6,68 +6,76 @@ type Element struct {
 	label   string
 	desc    string
 	typ     int
-	net     NetIntf
+	net     INet
 	enabled bool
 }
 
-// GetID :
-func (e *Element) GetID() (result string) {
+// ID :
+func (e *Element) ID(values ...string) (result string) {
+	if len(values) > 0 {
+		e.id = values[0]
+	}
 	result = e.id
 	return
 }
 
-// GetLabel :
-func (e *Element) GetLabel() (result string) {
+// Label :
+func (e *Element) Label(values ...string) (result string) {
+	if len(values) > 0 {
+		e.label = values[0]
+	}
 	result = e.label
 	return
 }
 
-// GetDesc :
-func (e *Element) GetDesc() (result string) {
+// Desc :
+func (e *Element) Desc(values ...string) (result string) {
+	if len(values) > 0 {
+		e.desc = values[0]
+	}
 	result = e.desc
 	return
 }
 
-// GetType :
-func (e *Element) GetType() (result int) {
+// Type :
+func (e *Element) Type(values ...int) (result int) {
+	if len(values) > 0 {
+		e.typ = values[0]
+	}
 	result = e.typ
 	return
 }
 
-// GetNet :
-func (e *Element) GetNet() (result NetIntf) {
+// Net :
+func (e *Element) Net(values ...INet) (result INet) {
+	if len(values) > 0 {
+		e.net = values[0]
+	}
 	result = e.net
 	return
 }
 
-// GetStatus :
-func (e *Element) GetStatus() (result bool) {
+// Enabled :
+func (e *Element) Enabled(values ...bool) (result bool) {
+	if len(values) > 0 {
+		e.enabled = values[0]
+	}
 	result = e.enabled
 	return
 }
 
-// Enable :
-func (e *Element) Enable() {
-	e.enabled = true
-}
-
-// Disable :
-func (e *Element) Disable() {
-	e.enabled = false
-}
-
-// IsIdentic :
-func (e *Element) IsIdentic(e1 ElementIntf) (result bool, reason string) {
+// IdenticWith :
+func (e *Element) IdenticWith(e1 IElement) (result bool, reason string) {
 	result = false
-	if e1.GetType() != e.typ {
+	if e1.Type() != e.typ {
 		reason = "type not equal"
-	} else if e1.GetID() != e.id {
+	} else if e1.ID() != e.id {
 		reason = "id not equal"
-	} else if e1.GetLabel() != e.label {
+	} else if e1.Label() != e.label {
 		reason = "label not equal"
-	} else if e1.GetDesc() != e.desc {
+	} else if e1.Desc() != e.desc {
 		reason = "desc not equal"
-	} else if e1.GetStatus() != e.enabled {
+	} else if e1.Enabled() != e.enabled {
 		reason = "status not equal"
 	} else {
 		result = true
@@ -76,7 +84,7 @@ func (e *Element) IsIdentic(e1 ElementIntf) (result bool, reason string) {
 }
 
 // NewElement function
-func NewElement(net NetIntf, id, label, desc string, typ int) (result ElementIntf) {
+func NewElement(net INet, id, label, desc string, typ int) (result IElement) {
 	result = &Element{
 		id:      id,
 		label:   label,

@@ -9,7 +9,7 @@ type State struct {
 	Node
 	capacity int
 	stateID  int
-	tokens   []TokenIntf
+	tokens   []IToken
 }
 
 // GetCapacity :
@@ -41,31 +41,31 @@ func (s *State) GetTokenCount() (result int) {
 }
 
 // GetToken :
-func (s *State) GetToken(c int) (result []TokenIntf) {
+func (s *State) GetToken(c int) (result []IToken) {
 	result = s.tokens[:c]
 	s.tokens = s.tokens[c:]
 	return
 }
 
 // GetTokenCopies :
-func (s *State) GetTokenCopies() (result []TokenIntf) {
+func (s *State) GetTokenCopies() (result []IToken) {
 	result = s.tokens[:]
 	return
 }
 
 // AddToken :
-func (s *State) AddToken(t ...TokenIntf) {
+func (s *State) AddToken(t ...IToken) {
 	s.tokens = append(s.tokens, t...)
 }
 
 // IsReady :
-func (s *State) IsReady(t TransitionIntf) (result bool) {
+func (s *State) IsReady(t ITransition) (result bool) {
 	result = t.IsStateReady(s)
 	return
 }
 
 // IsIdentic :
-func (s *State) IsIdentic(s1 StateIntf) (result bool, reason string) {
+func (s *State) IsIdentic(s1 IState) (result bool, reason string) {
 	if result, reason = s.Node.IsIdentic(&s1.(*State).Node); !result {
 		return
 	}
@@ -79,7 +79,7 @@ func (s *State) IsIdentic(s1 StateIntf) (result bool, reason string) {
 		for i, t := range s.tokens {
 			t0 := t
 			t1 := s1tokens[i]
-			if t1.(ElementIntf).GetID() != t0.(ElementIntf).GetID() {
+			if t1.(IElement).GetID() != t0.(IElement).GetID() {
 				reason = fmt.Sprintf("token #%d not equal", i)
 				return
 			}
@@ -89,12 +89,12 @@ func (s *State) IsIdentic(s1 StateIntf) (result bool, reason string) {
 }
 
 // NewState :
-func NewState(net NetIntf, id, label, desc string, stateid, capacity int) (result StateIntf) {
+func NewState(net INet, id, label, desc string, stateid, capacity int) (result IState) {
 	result = &State{
 		Node:     *NewNode(net, id, label, desc, ElementTypeNodeState).(*Node),
 		capacity: capacity,
 		stateID:  stateid,
-		tokens:   []TokenIntf{},
+		tokens:   []IToken{},
 	}
 	return
 }

@@ -8,9 +8,9 @@ import (
 // Net struct
 type Net struct {
 	Element
-	nodes       []NodeIntf
-	states      []StateIntf
-	transitions []TransitionIntf
+	nodes       []INode
+	states      []IState
+	transitions []ITransition
 	paused      bool
 	stepCount   int
 }
@@ -34,7 +34,7 @@ func (n *Net) GetTransitionCount() (result int) {
 }
 
 // GetNode :
-func (n *Net) GetNode(index int) (result NodeIntf) {
+func (n *Net) GetNode(index int) (result INode) {
 	result = nil
 	if index < 0 || index >= len(n.nodes) {
 		return
@@ -44,13 +44,13 @@ func (n *Net) GetNode(index int) (result NodeIntf) {
 }
 
 // GetNodes :
-func (n *Net) GetNodes() (result []NodeIntf) {
+func (n *Net) GetNodes() (result []INode) {
 	result = n.nodes
 	return
 }
 
 // GetState :
-func (n *Net) GetState(index int) (result StateIntf) {
+func (n *Net) GetState(index int) (result IState) {
 	result = nil
 	if index < 0 || index >= len(n.states) {
 		return
@@ -60,13 +60,13 @@ func (n *Net) GetState(index int) (result StateIntf) {
 }
 
 // GetStates :
-func (n *Net) GetStates() (result []StateIntf) {
+func (n *Net) GetStates() (result []IState) {
 	result = n.states
 	return
 }
 
 // GetTransition :
-func (n *Net) GetTransition(index int) (result TransitionIntf) {
+func (n *Net) GetTransition(index int) (result ITransition) {
 	result = nil
 	if index < 0 || index >= len(n.transitions) {
 		return
@@ -76,7 +76,7 @@ func (n *Net) GetTransition(index int) (result TransitionIntf) {
 }
 
 // GetTransitions :
-func (n *Net) GetTransitions() (result []TransitionIntf) {
+func (n *Net) GetTransitions() (result []ITransition) {
 	result = n.transitions
 	return
 }
@@ -109,7 +109,7 @@ func (n *Net) IsDeadLock() (result bool) {
 }
 
 // IsIdentic :
-func (n *Net) IsIdentic(n1 NetIntf) (result bool, reason string) {
+func (n *Net) IsIdentic(n1 INet) (result bool, reason string) {
 	if result, reason = n.Element.IsIdentic(&n1.(*Net).Element); !result {
 		return
 	}
@@ -122,21 +122,21 @@ func (n *Net) IsIdentic(n1 NetIntf) (result bool, reason string) {
 	} else {
 		nodes := n1.GetNodes()
 		for i, node := range n.nodes {
-			if node.(*Node).Element.GetID() != nodes[i].(ElementIntf).GetID() {
+			if node.(*Node).Element.GetID() != nodes[i].(IElement).GetID() {
 				reason = fmt.Sprintf("node #%d not equal", i)
 				return
 			}
 		}
 		states := n1.GetStates()
 		for i, state := range n.states {
-			if state.(*State).Node.Element.GetID() != states[i].(ElementIntf).GetID() {
+			if state.(*State).Node.Element.GetID() != states[i].(IElement).GetID() {
 				reason = fmt.Sprintf("state #%d not equal", i)
 				return
 			}
 		}
 		transitions := n1.GetTransitions()
 		for i, transition := range n.transitions {
-			if transition.(*Transition).Node.Element.GetID() != transitions[i].(ElementIntf).GetID() {
+			if transition.(*Transition).Node.Element.GetID() != transitions[i].(IElement).GetID() {
 				reason = fmt.Sprintf("transition #%d not equal", i)
 				return
 			}
@@ -146,19 +146,19 @@ func (n *Net) IsIdentic(n1 NetIntf) (result bool, reason string) {
 }
 
 // IsTransitionReady :
-func (n *Net) IsTransitionReady(t TransitionIntf) (result bool) {
+func (n *Net) IsTransitionReady(t ITransition) (result bool) {
 
 	return
 }
 
 // Execute :
-func (n *Net) Execute(t TransitionIntf) (result bool, err error) {
+func (n *Net) Execute(t ITransition) (result bool, err error) {
 
 	return
 }
 
 // AddState :
-func (n *Net) AddState(id, label, desc string, stateid, capacity int) (result StateIntf) {
+func (n *Net) AddState(id, label, desc string, stateid, capacity int) (result IState) {
 	result = NewState(n, id, label, desc, stateid, capacity)
 	n.nodes = append(n.nodes, &result.(*State).Node)
 	n.states = append(n.states, result)
@@ -166,7 +166,7 @@ func (n *Net) AddState(id, label, desc string, stateid, capacity int) (result St
 }
 
 // AddTransition :
-func (n *Net) AddTransition(id, label, desc string, onexec OnExec) (result TransitionIntf) {
+func (n *Net) AddTransition(id, label, desc string, onexec OnExec) (result ITransition) {
 	result = NewTransition(n, id, label, desc, onexec)
 	n.nodes = append(n.nodes, &result.(*Transition).Node)
 	n.transitions = append(n.transitions, result)
@@ -174,26 +174,26 @@ func (n *Net) AddTransition(id, label, desc string, onexec OnExec) (result Trans
 }
 
 // ConnectStateTransition :
-func (n *Net) ConnectStateTransition(s StateIntf, t TransitionIntf, arctype, activationTreshold int) {
+func (n *Net) ConnectStateTransition(s IState, t ITransition, arctype, activationTreshold int) {
 	t.ConnectInput(s, arctype, activationTreshold)
 }
 
 // ConnectTransitionState :
-func (n *Net) ConnectTransitionState(s StateIntf, t TransitionIntf) {
+func (n *Net) ConnectTransitionState(s IState, t ITransition) {
 	t.ConnectOutput(s)
 }
 
 // AddTokenToState :
-func (n *Net) AddTokenToState(s StateIntf, tokens ...TokenIntf) {
+func (n *Net) AddTokenToState(s IState, tokens ...IToken) {
 
 }
 
 // NewNet :
-func NewNet(id, label, desc string) (result NetIntf) {
+func NewNet(id, label, desc string) (result INet) {
 	result = &Net{
-		nodes:       []NodeIntf{},
-		states:      []StateIntf{},
-		transitions: []TransitionIntf{},
+		nodes:       []INode{},
+		states:      []IState{},
+		transitions: []ITransition{},
 	}
 	result.(*Net).Element = *NewElement(nil, id, label, desc, ElementTypeNet).(*Element)
 	return
