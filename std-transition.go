@@ -5,22 +5,22 @@ import (
 )
 
 // OnExec :
-type OnExec func(tkns map[int][]TokenIntf, outTkns *map[int][]TokenIntf)
+type OnExec func(tkns map[int][]IToken, outTkns *map[int][]IToken)
 
 // Transition :
 type Transition struct {
 	Node
 	activationTreshold map[int]int
-	inputTokens        map[int][]TokenIntf
-	outputTokens       map[int][]TokenIntf
-	inputStates        map[int]StateIntf
-	outputStates       map[int]StateIntf
+	inputTokens        map[int][]IToken
+	outputTokens       map[int][]IToken
+	inputStates        map[int]IState
+	outputStates       map[int]IState
 	inputArcTypes      map[int]int
 	onExecute          OnExec
 }
 
 // IsIdentic :
-func (t *Transition) IsIdentic(t1 TransitionIntf) (result bool, reason string) {
+func (t *Transition) IsIdentic(t1 ITransition) (result bool, reason string) {
 	if result, reason = t.Node.IsIdentic(&t1.(*Transition).Node); !result {
 		return
 	}
@@ -41,7 +41,7 @@ func (t *Transition) GetActivationTreshold(stateID int) (result int) {
 }
 
 // IsStateReady :
-func (t *Transition) IsStateReady(s StateIntf) (result bool) {
+func (t *Transition) IsStateReady(s IState) (result bool) {
 	result = s.GetTokenCount() > t.activationTreshold[s.GetStateID()]
 	return
 }
@@ -55,7 +55,7 @@ func (t *Transition) Execute() {
 		t.inputTokens[stateID] = state.GetToken(t.activationTreshold[stateID])
 	}
 	t.onExecute(t.inputTokens, &t.outputTokens)
-	t.inputTokens = map[int][]TokenIntf{}
+	t.inputTokens = map[int][]IToken{}
 	t.DistributeTokens()
 }
 
@@ -65,21 +65,21 @@ func (t *Transition) DistributeTokens() {
 		state := t.outputStates[stateID]
 		state.AddToken(tkns...)
 	}
-	t.outputTokens = map[int][]TokenIntf{}
+	t.outputTokens = map[int][]IToken{}
 }
 
 // IsReady :
 func (t *Transition) IsReady() (result bool) {
 	result = true
 	for _, n := range t.inputs {
-		result = result && t.IsStateReady(n.(StateIntf))
+		result = result && t.IsStateReady(n.(IState))
 	}
 	result = result && (t.onExecute != nil)
 	return
 }
 
 // ConnectInput :
-func (t *Transition) ConnectInput(s StateIntf, arctype, activationTreshold int) {
+func (t *Transition) ConnectInput(s IState, arctype, activationTreshold int) {
 	t.Node.AddInput(&s.(*State).Node)
 	s.(*State).Node.AddOutput(&t.Node)
 	t.inputStates[s.GetStateID()] = s
@@ -88,20 +88,20 @@ func (t *Transition) ConnectInput(s StateIntf, arctype, activationTreshold int) 
 }
 
 // ConnectOutput :
-func (t *Transition) ConnectOutput(s StateIntf) {
+func (t *Transition) ConnectOutput(s IState) {
 	t.Node.AddOutput(&s.(*State).Node)
 	t.outputStates[s.GetStateID()] = s
 }
 
 // NewTransition :
-func NewTransition(net NetIntf, id, label, desc string, onexec OnExec) (result TransitionIntf) {
+func NewTransition(net INet, id, label, desc string, onexec OnExec) (result ITransition) {
 	result = &Transition{
 		Node:               *NewNode(net, id, label, desc, ElementTypeNodeTransition).(*Node),
 		activationTreshold: map[int]int{},
-		inputStates:        map[int]StateIntf{},
-		outputStates:       map[int]StateIntf{},
-		inputTokens:        map[int][]TokenIntf{},
-		outputTokens:       map[int][]TokenIntf{},
+		inputStates:        map[int]IState{},
+		outputStates:       map[int]IState{},
+		inputTokens:        map[int][]IToken{},
+		outputTokens:       map[int][]IToken{},
 		inputArcTypes:      map[int]int{},
 		onExecute:          onexec,
 	}

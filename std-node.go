@@ -7,64 +7,116 @@ import (
 // Node :
 type Node struct {
 	Element
-	inputs   []NodeIntf
-	outputs  []NodeIntf
-	interior NetIntf
+	inputs   []*INode
+	outputs  []*INode
+	interior *INet
 }
 
-// GetNodeType :
-func (n *Node) GetNodeType() (result int) {
+// NodeType :
+func (n *Node) NodeType() (result int) {
 	result = NodeState
 	return
 }
 
-// GetInputCount :
-func (n *Node) GetInputCount() (result int) {
-	result = len(n.inputs)
-	return
-}
-
-// GetOutputCount :
-func (n *Node) GetOutputCount() (result int) {
-	result = len(n.outputs)
-	return
-}
-
-// GetInputs :
-func (n *Node) GetInputs() (result []NodeIntf) {
-	result = n.inputs
-	return
-}
-
-// GetOutputs :
-func (n *Node) GetOutputs() (result []NodeIntf) {
-	result = n.outputs
-	return
-}
-
-// AddInput :
-func (n *Node) AddInput(n1 ...NodeIntf) {
-	n.inputs = append(n.inputs, n1...)
-}
-
-// AddOutput :
-func (n *Node) AddOutput(n1 ...NodeIntf) {
-	n.outputs = append(n.outputs, n1...)
-}
-
-// GetInterior :
-func (n *Node) GetInterior() (result NetIntf) {
+// Interior :
+func (n *Node) Interior(values ...*INet) (result *INet) {
+	if len(values) > 0 {
+		n.interior = values[0]
+	}
 	result = n.interior
 	return
 }
 
-// SetInterior :
-func (n *Node) SetInterior(net NetIntf) {
-	n.interior = net
+// Inputs :
+func (n *Node) Inputs(values ...*INode) (result []*INode) {
+	if len(values) > 0 {
+		n.inputs = values
+	}
+	result = n.inputs
+	return
 }
 
-// IsIdentic :
-func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
+// InputCount :
+func (n *Node) InputCount() int {
+	result = len(n.inputs)
+	return
+}
+
+// InputAdd :
+func (n *Node) InputAdd(values ...INode) {
+	if len(values) > 0 {
+		for _, v := range values {
+			if n.typ == NodeState && (v.NodeType() == NodeTransition ||
+				v.NodeType() == NodeOmni) {
+				n.net.ConnectStateTransition(v, n)
+			} else if n.typ == NodeTransition && (v.NodeType() == NodeState ||
+				v.NodeType() == NodeOmni) {
+				n.net.ConnectTransitionState(v, n)
+			}
+		}
+	}
+}
+
+// InputRemove :
+func (n *Node) InputRemove(values ...INode) {
+	if len(values) > 0 {
+		for _, v := range values {
+			n.net.DisconnectNodes(v, n)
+		}
+	}
+}
+
+// InputClear :
+func (n *Node) InputClear() {
+	n.InputRemove(n.inputs...)
+}
+
+// Outputs :
+func (n *Node) Outputs(values ...INode) (result []INode) {
+	if len(values) > 0 {
+		n.outputs = values
+	}
+	result = n.outputs
+	return
+}
+
+// OutputCount :
+func (n *Node) OutputCount() (result int) {
+	result = len(n.outputs)
+	return
+}
+
+// OutputAdd :
+func (n *Node) OutputAdd(...INode) {
+	if len(values) > 0 {
+		for _, v := range values {
+			if n.typ == NodeState && (v.NodeType() == NodeTransition ||
+				v.NodeType() == NodeOmni) {
+				n.net.ConnectStateTransition(n, v)
+			} else if n.typ == NodeTransition && (v.NodeType() == NodeState ||
+				v.NodeType() == NodeOmni) {
+				n.net.ConnectTransitionState(n, v)
+			}
+		}
+	}
+}
+
+// OutputRemove :
+func (n *Node) OutputRemove(...INode) {
+	if len(values) > 0 {
+		for _, v := range values {
+			n.net.DisconnectNodes(n, v)
+		}
+	}
+}
+
+// OutputClear :
+func (n *Node) OutputClear() {
+	n.OutputRemove(n.outputs...)
+}
+
+// IdenticWith :
+func (n *Node) IdenticWith(n1 INode) (result bool, reason string) {
 	if result, reason = n.Element.IsIdentic(&n1.(*Node).Element); !result {
 		return
 	}
@@ -91,7 +143,7 @@ func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
 	result = result && (n1.GetInterior() == n.interior)
 	if result && n1.GetInterior() == n.interior {
 		if n.interior != nil {
-			if n1.GetInterior().(ElementIntf).GetID() != n.interior.(ElementIntf).GetID() {
+			if n1.GetInterior().(IElement).GetID() != n.interior.(IElement).GetID() {
 				reason = "interior not equal"
 			}
 		}
@@ -100,11 +152,11 @@ func (n *Node) IsIdentic(n1 NodeIntf) (result bool, reason string) {
 }
 
 // NewNode :
-func NewNode(net NetIntf, id, label, desc string, typ int) (result NodeIntf) {
+func NewNode(net INet, id, label, desc string, typ int) (result INode) {
 	result = &Node{
 		Element:  *NewElement(net, id, label, desc, typ).(*Element),
-		inputs:   []NodeIntf{},
-		outputs:  []NodeIntf{},
+		inputs:   []INode{},
+		outputs:  []INode{},
 		interior: nil,
 	}
 	return
