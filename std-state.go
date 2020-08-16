@@ -12,70 +12,69 @@ type State struct {
 	tokens   []IToken
 }
 
-// GetCapacity :
-func (s *State) GetCapacity() (result int) {
+// Capacity :
+func (s *State) Capacity(values ...int) (result int) {
 	result = s.capacity
 	return
 }
 
-// SetCapacity :
-func (s *State) SetCapacity(v int) {
-	s.capacity = v
-}
-
-// GetStateID :
-func (s *State) GetStateID() (result int) {
+// StateID :
+func (s *State) StateID(values ...int) (result int) {
+	if len(values) > 0 {
+		s.stateID = values[0]
+	}
 	result = s.stateID
 	return
 }
 
-// SetStateID :
-func (s *State) SetStateID(v int) {
-	s.stateID = v
+// Token :
+func (s *State) Token(indexes ...int) (result []IToken) {
+	if len(indexes) > 0 {
+		for _, i := range indexes {
+			result = append(result, s.tokens[i])
+		}
+	} else {
+		result = s.tokens
+	}
+	return
 }
 
-// GetTokenCount :
-func (s *State) GetTokenCount() (result int) {
+// TokenCount :
+func (s *State) TokenCount() (result int) {
 	result = len(s.tokens)
 	return
 }
 
-// GetToken :
-func (s *State) GetToken(c int) (result []IToken) {
-	result = s.tokens[:c]
-	s.tokens = s.tokens[c:]
+// TokenFetch :
+func (s *State) TokenFetch(count int) []IToken {
+	result = s.tokens[:count]
+	s.tokens = s.tokens[count:]
 	return
 }
 
-// GetTokenCopies :
-func (s *State) GetTokenCopies() (result []IToken) {
+// TokenCopies :
+func (s *State) TokenCopies() []IToken {
 	result = s.tokens[:]
 	return
 }
 
-// AddToken :
-func (s *State) AddToken(t ...IToken) {
-	s.tokens = append(s.tokens, t...)
+// TokenAdd :
+func (s *State) TokenAdd(values ...IToken) {
+	s.tokens = append(s.tokens, values...)
 }
 
-// IsReady :
-func (s *State) IsReady(t ITransition) (result bool) {
-	result = t.IsStateReady(s)
-	return
-}
-
-// IsIdentic :
-func (s *State) IsIdentic(s1 IState) (result bool, reason string) {
-	if result, reason = s.Node.IsIdentic(&s1.(*State).Node); !result {
+// IdenticWith :
+func (s *State) IdenticWith(state IState) (result bool, reason string) {
+	if result, reason = s.Node.IdenticWith(&state.(*State).Node); !result {
 		return
 	}
 
 	if s1.GetCapacity() != s.capacity {
 		reason = "token count not equal"
-	} else if s1.GetTokenCount() != len(s.tokens) {
+	} else if state.GetTokenCount() != len(s.tokens) {
 		reason = "token count not equal"
 	} else {
-		s1tokens := s1.GetTokenCopies()
+		s1tokens := state.GetTokenCopies()
 		for i, t := range s.tokens {
 			t0 := t
 			t1 := s1tokens[i]
@@ -85,6 +84,12 @@ func (s *State) IsIdentic(s1 IState) (result bool, reason string) {
 			}
 		}
 	}
+	return
+}
+
+// Ready :
+func (s *State) Ready(transition ITransition) (result bool) {
+	result = transition.StateReady(s)
 	return
 }
 

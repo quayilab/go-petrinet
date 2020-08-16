@@ -65,17 +65,17 @@ func (e *Element) Enabled(values ...bool) (result bool) {
 }
 
 // IdenticWith :
-func (e *Element) IdenticWith(e1 IElement) (result bool, reason string) {
+func (e *Element) IdenticWith(element IElement) (result bool, reason string) {
 	result = false
-	if e1.Type() != e.typ {
+	if element.Type() != e.typ {
 		reason = "type not equal"
-	} else if e1.ID() != e.id {
+	} else if element.ID() != e.id {
 		reason = "id not equal"
-	} else if e1.Label() != e.label {
+	} else if element.Label() != e.label {
 		reason = "label not equal"
-	} else if e1.Desc() != e.desc {
+	} else if element.Desc() != e.desc {
 		reason = "desc not equal"
-	} else if e1.Enabled() != e.enabled {
+	} else if element.Enabled() != e.enabled {
 		reason = "status not equal"
 	} else {
 		result = true
