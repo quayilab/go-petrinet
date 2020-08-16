@@ -15,26 +15,20 @@ type Net struct {
 	stepCount   int
 }
 
-// GetNodeCount :
-func (n *Net) GetNodeCount() (result int) {
+// NodeCount :
+func (n *Net) NodeCount() (result int) {
 	result = len(n.nodes)
 	return
 }
 
-// GetStateCount :
-func (n *Net) GetStateCount() (result int) {
-	result = len(n.states)
+// Nodes :
+func (n *Net) Nodes() (result []INode) {
+	result = n.nodes
 	return
 }
 
-// GetTransitionCount :
-func (n *Net) GetTransitionCount() (result int) {
-	result = len(n.transitions)
-	return
-}
-
-// GetNode :
-func (n *Net) GetNode(index int) (result INode) {
+// Node :
+func (n *Net) Node(index int) (result INode) {
 	result = nil
 	if index < 0 || index >= len(n.nodes) {
 		return
@@ -43,14 +37,20 @@ func (n *Net) GetNode(index int) (result INode) {
 	return
 }
 
-// GetNodes :
-func (n *Net) GetNodes() (result []INode) {
-	result = n.nodes
+// StateCount :
+func (n *Net) StateCount() (result int) {
+	result = len(n.states)
 	return
 }
 
-// GetState :
-func (n *Net) GetState(index int) (result IState) {
+// States :
+func (n *Net) States() (result []IState) {
+	result = n.states
+	return
+}
+
+// State :
+func (n *Net) State(index int) (result IState) {
 	result = nil
 	if index < 0 || index >= len(n.states) {
 		return
@@ -59,14 +59,31 @@ func (n *Net) GetState(index int) (result IState) {
 	return
 }
 
-// GetStates :
-func (n *Net) GetStates() (result []IState) {
-	result = n.states
+// StateAdd :
+func (n *Net) StateAdd(id string, label string, description string, stateid int, capacity int) (result IState) {
+	result = NewState(n, id, label, description, stateid, capacity)
 	return
 }
 
-// GetTransition :
-func (n *Net) GetTransition(index int) (result ITransition) {
+// StateAddToken :
+func (n *Net) StateAddToken(state IState, tokens ...IToken) {
+	state.TokenAdd(tokens...)
+}
+
+// TransitionCount :
+func (n *Net) TransitionCount() (result int) {
+	result = len(n.transitions)
+	return
+}
+
+// Transitions :
+func (n *Net) Transitions() (result []ITransition) {
+	result = n.transitions
+	return
+}
+
+// Transition :
+func (n *Net) Transition(index int) (result ITransition) {
 	result = nil
 	if index < 0 || index >= len(n.transitions) {
 		return
@@ -75,9 +92,86 @@ func (n *Net) GetTransition(index int) (result ITransition) {
 	return
 }
 
-// GetTransitions :
-func (n *Net) GetTransitions() (result []ITransition) {
-	result = n.transitions
+// TransitionAdd :
+func (n *Net) TransitionAdd(id string, label string, description string, onExec OnExec, onTestState OnTestState) (result ITransition) {
+	result = NewTransition(n, id, label, description, onExec, onTestState)
+	return
+}
+
+// TransitionReady :
+func (n *Net) TransitionReady(transition ITransition) (result bool) {
+	result = transition.Ready()
+	return
+}
+
+// ConnectStateTransition :
+func (n *Net) ConnectStateTransition(state IState, transition ITransition) (err error) {
+	err = state.(INode).OutputAdd(transition.(INode))
+	return
+}
+
+// ConnectTransitionState :
+func (n *Net) ConnectTransitionState(state IState, transition ITransition) (err error) {
+	err = state.(INode).InputAdd(transition.(INode))
+	return
+}
+
+// ConnectNodes :
+func (n *Net) ConnectNodes(node1, node2 INode) (err error) {
+	err = node1.OutputAdd(node2)
+	return
+}
+
+// TryConnectNodes :
+func (n *Net) TryConnectNodes(node1, node2 INode) (err error) {
+	return
+}
+
+// DisconnectNodes :
+func (n *Net) DisconnectNodes(node1, node2 INode) (err error) {
+	node1.OutputRemove(node2)
+	return
+}
+
+// TryDisconnectNodes :
+func (n *Net) TryDisconnectNodes(node1, node2 INode) (err error) {
+	return
+}
+
+// IdenticWith :
+func (n *Net) IdenticWith(net INet) (identic bool, reason string) {
+	if identic, reason = n.Element.IdenticWith(&net.(*Net).Element); !identic {
+		return
+	}
+	if net.NodeCount() != len(n.nodes) {
+		reason = "nodes length not equal"
+	} else if net.StateCount() != len(n.states) {
+		reason = "states length not equal"
+	} else if net.TransitionCount() != len(n.transitions) {
+		reason = "transitions length not equal"
+	} else {
+		nodes := net.Nodes()
+		for i, node := range n.nodes {
+			if node.(*Node).Element.ID() != nodes[i].(IElement).ID() {
+				reason = fmt.Sprintf("node #%d not equal", i)
+				return
+			}
+		}
+		states := net.States()
+		for i, state := range n.states {
+			if state.(*State).Node.Element.ID() != states[i].(IElement).ID() {
+				reason = fmt.Sprintf("state #%d not equal", i)
+				return
+			}
+		}
+		transitions := net.Transitions()
+		for i, transition := range n.transitions {
+			if transition.(*Transition).Node.Element.ID() != transitions[i].(IElement).ID() {
+				reason = fmt.Sprintf("transition #%d not equal", i)
+				return
+			}
+		}
+	}
 	return
 }
 
@@ -96,95 +190,23 @@ func (n *Net) Pause() {
 
 }
 
-// IsReady :
-func (n *Net) IsReady() (result bool) {
+// Running :
+func (n *Net) Running() (result bool) {
 
-	return
 }
 
-// IsDeadLock :
-func (n *Net) IsDeadLock() (result bool) {
+// Ready :
+func (n *Net) Ready() (result bool) {
 
-	return
 }
 
-// IsIdentic :
-func (n *Net) IsIdentic(n1 INet) (result bool, reason string) {
-	if result, reason = n.Element.IsIdentic(&n1.(*Net).Element); !result {
-		return
-	}
-	if n1.GetNodeCount() != len(n.nodes) {
-		reason = "nodes length not equal"
-	} else if n1.GetStateCount() != len(n.states) {
-		reason = "states length not equal"
-	} else if n1.GetTransitionCount() != len(n.transitions) {
-		reason = "transitions length not equal"
-	} else {
-		nodes := n1.GetNodes()
-		for i, node := range n.nodes {
-			if node.(*Node).Element.GetID() != nodes[i].(IElement).GetID() {
-				reason = fmt.Sprintf("node #%d not equal", i)
-				return
-			}
-		}
-		states := n1.GetStates()
-		for i, state := range n.states {
-			if state.(*State).Node.Element.GetID() != states[i].(IElement).GetID() {
-				reason = fmt.Sprintf("state #%d not equal", i)
-				return
-			}
-		}
-		transitions := n1.GetTransitions()
-		for i, transition := range n.transitions {
-			if transition.(*Transition).Node.Element.GetID() != transitions[i].(IElement).GetID() {
-				reason = fmt.Sprintf("transition #%d not equal", i)
-				return
-			}
-		}
-	}
-	return
-}
+// DeadLock :
+func (n *Net) DeadLock() (result bool) {
 
-// IsTransitionReady :
-func (n *Net) IsTransitionReady(t ITransition) (result bool) {
-
-	return
 }
 
 // Execute :
-func (n *Net) Execute(t ITransition) (result bool, err error) {
-
-	return
-}
-
-// AddState :
-func (n *Net) AddState(id, label, desc string, stateid, capacity int) (result IState) {
-	result = NewState(n, id, label, desc, stateid, capacity)
-	n.nodes = append(n.nodes, &result.(*State).Node)
-	n.states = append(n.states, result)
-	return
-}
-
-// AddTransition :
-func (n *Net) AddTransition(id, label, desc string, onexec OnExec) (result ITransition) {
-	result = NewTransition(n, id, label, desc, onexec)
-	n.nodes = append(n.nodes, &result.(*Transition).Node)
-	n.transitions = append(n.transitions, result)
-	return
-}
-
-// ConnectStateTransition :
-func (n *Net) ConnectStateTransition(s IState, t ITransition, arctype, activationTreshold int) {
-	t.ConnectInput(s, arctype, activationTreshold)
-}
-
-// ConnectTransitionState :
-func (n *Net) ConnectTransitionState(s IState, t ITransition) {
-	t.ConnectOutput(s)
-}
-
-// AddTokenToState :
-func (n *Net) AddTokenToState(s IState, tokens ...IToken) {
+func (n *Net) Execute(transition ITransition) (result bool, err error) {
 
 }
 
