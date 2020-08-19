@@ -39,14 +39,17 @@ type IState interface {
 	// internal attributes
 	Capacity(values ...int) (result int)
 	StateID(values ...int) (result int)
+	StorageMode(values ...int) (result int)
+	TokenTypes(tokenTypes ...string) (result []string)
 	// token
-	Token(indexes ...int) (result []IToken)
-	TokenCount() int
+	//Token(indexes ...int) (result []IToken)
+	TokenCount(tokenType ...string) int
+	TokenPeek(count int) (result []IToken)
 	TokenFetch(count int) (result []IToken)
-	TokenCopies() (result []IToken)
+	//TokenCopies() (result []IToken)
 	TokenAdd(values ...IToken)
 	// comparison
-	IdenticWith(state IState) (idetic bool, reason string)
+	IdenticWith(state IState) (identic bool, reason string)
 	// operations
 	Ready(transition ITransition) (result bool)
 }
@@ -59,6 +62,7 @@ type ITransition interface {
 	ConnectInput(state IState)
 	ConnectOutput(state IState)
 	// operations
+	ActivationTreshold(tokenType string) (result int)
 	StateReady(state IState) (result bool)
 	Ready() (result bool)
 	Execute()
@@ -67,6 +71,7 @@ type ITransition interface {
 
 // IToken :
 type IToken interface {
+	Type() (result string)
 	Data(data ...interface{}) (result interface{})
 	Values(values ...string) (result []interface{})
 }
@@ -81,7 +86,7 @@ type INet interface {
 	StateCount() (result int)
 	States() (result []IState)
 	State(index int) (result IState)
-	StateAdd(id string, label string, description string, stateId int, capacity int) (result IState)
+	StateAdd(id string, label string, description string, stateid int, capacity int) (result IState)
 	StateAddToken(state IState, tokens ...IToken)
 	// transitions
 	TransitionCount() (result int)
@@ -91,7 +96,7 @@ type INet interface {
 	TransitionReady(ITransition) bool
 	// net configuration
 	ConnectStateTransition(state IState, transition ITransition) (err error)
-	ConnectTransitionState(state IState, transition ITransition) (err error)
+	ConnectTransitionState(transition ITransition, state IState) (err error)
 	ConnectNodes(node1, node2 INode) (err error)
 	TryConnectNodes(node1, node2 INode) (err error)
 	DisconnectNodes(node1, node2 INode) (err error)

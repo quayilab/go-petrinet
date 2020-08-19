@@ -13,7 +13,7 @@ type OnTestState func(state IState) (result bool)
 // Transition :
 type Transition struct {
 	Node
-	activationTreshold map[int]int
+	activationTreshold map[string]int
 	inputTokens        map[int][]IToken
 	outputTokens       map[int][]IToken
 	inputStates        map[int]IState
@@ -24,12 +24,12 @@ type Transition struct {
 }
 
 // IdenticWith :
-func (t *Transition) IdenticWith(transition ITransition) (result bool, reason string) {
-	if result, reason = t.Node.IsIdentic(&transition.(*Transition).Node); !result {
+func (t *Transition) IdenticWith(transition ITransition) (identic bool, reason string) {
+	if identic, reason = t.Node.IdenticWith(transition.(INode)); !identic {
 		return
 	}
 	for tknType, count := range t.activationTreshold {
-		if count != transition.GetActivationTreshold(tknType) {
+		if count != transition.ActivationTreshold(tknType) {
 			reason = fmt.Sprintf("activation treshold #%d not equal", tknType)
 			break
 		}
@@ -47,13 +47,33 @@ func (t *Transition) ConnectOutput(state IState) {
 	t.net.ConnectTransitionState(t, state)
 }
 
+// ActivationTreshold :
+func (t *Transition) ActivationTreshold(tokenType string) (result int) {
+	result = t.activationTreshold[tokenType]
+	return result
+}
+
 // StateReady :
 func (t *Transition) StateReady(state IState) (result bool) {
-	if t.OnTestState(state) != nil {
-		result = t.OnTestState(state)
+	if t.onTestState != nil {
+		result = t.onTestState(state)
 		return
 	}
-	result = t.activationTreshold[state.StateID] <= state.TokenCount
+	switch state.StorageMode() {
+	case StorageMultiset:
+		for ttype, thold := range t.activationTreshold {
+			if state.TokenCount(ttype) >= thold {
+				result = true
+				break
+			}
+		}
+		break
+	case StorageChanel:
+
+		break
+	case StorageStack:
+		break
+	}
 	return
 }
 
@@ -69,11 +89,12 @@ func (t *Transition) Ready() (result bool) {
 
 // Execute :
 func (t *Transition) Execute() {
-	if !t.IsReady() {
+	if !t.Ready() {
 		return
 	}
 	for stateID, state := range t.inputStates {
-		t.inputTokens[stateID] = state.GetToken(t.activationTreshold[stateID])
+		state.
+			t.inputTokens[stateID] = state.TokenFetch(t.activationTreshold[stateID])
 	}
 	t.onExecute(t.inputTokens, &t.outputTokens)
 	t.inputTokens = map[int][]IToken{}
@@ -92,7 +113,7 @@ func (t *Transition) DistributeTokens() {
 // NewTransition :
 func NewTransition(net INet, id, label, desc string, onexec OnExec, onteststate OnTestState) (result ITransition) {
 	result = &Transition{
-		Node:               *NewNode(net, id, label, desc, ElementTypeNodeTransition).(*Node),
+		Node:               *NewNode(net, id, label, desc, ElementTypeNodeTransition, NodeTransition).(*Node),
 		activationTreshold: map[int]int{},
 		inputStates:        map[int]IState{},
 		outputStates:       map[int]IState{},
