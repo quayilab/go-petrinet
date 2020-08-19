@@ -7,6 +7,7 @@ import (
 // Node :
 type Node struct {
 	Element
+	kind     int
 	inputs   []INode
 	outputs  []INode
 	interior INet
@@ -36,7 +37,7 @@ func (n *Node) Inputs(values ...int) (result []INode) {
 }
 
 // InputCount :
-func (n *Node) InputCount() int {
+func (n *Node) InputCount() (result int) {
 	result = len(n.inputs)
 	return
 }
@@ -45,14 +46,14 @@ func (n *Node) InputCount() int {
 func (n *Node) InputAdd(values ...INode) (err error) {
 	if len(values) > 0 {
 		for _, v := range values {
-			if elementExists(v.ID(), n.inputs) {
-				err = fmt.Errorf(ReasonConnectionExists, n.ID, v.ID())
+			if nodeExists(v.(IElement).ID(), n.inputs) {
+				err = fmt.Errorf(ReasonConnectionExists, n.ID, v.(IElement).ID())
 				return
 			}
 		}
 		for _, v := range values {
-			if n.typ != NodeOmni && n.typ == v.NodeType() {
-				err = fmt.Errorf(ReasonIncompatibleNodeTypes, n.ID, v.ID())
+			if n.kind != NodeOmni && n.kind == v.NodeType() {
+				err = fmt.Errorf(ReasonIncompatibleNodeTypes, n.ID, v.(IElement).ID())
 				return
 			}
 		}
@@ -67,8 +68,8 @@ func (n *Node) InputAdd(values ...INode) (err error) {
 func (n *Node) InputRemove(values ...INode) (err error) {
 	if len(values) > 0 {
 		for _, v := range values {
-			if !elementExists(v.ID(), n.inputs) {
-				err = fmt.Errorf(ReasonConnectionInexist, n.ID, v.ID())
+			if !nodeExists(v.(IElement).ID(), n.inputs) {
+				err = fmt.Errorf(ReasonConnectionInexist, n.ID, v.(IElement).ID())
 				return
 			}
 		}
@@ -100,17 +101,17 @@ func (n *Node) OutputCount() (result int) {
 }
 
 // OutputAdd :
-func (n *Node) OutputAdd(...INode) (err error) {
+func (n *Node) OutputAdd(values ...INode) (err error) {
 	if len(values) > 0 {
 		for _, v := range values {
-			if elementExists(v.ID(), n.outputs) {
-				err = fmt.Errorf(ReasonConnectionExists, v.ID())
+			if nodeExists(v.(IElement).ID(), n.outputs) {
+				err = fmt.Errorf(ReasonConnectionExists, v.(IElement).ID())
 				return
 			}
 		}
 		for _, v := range values {
-			if n.typ != NodeOmni && n.typ == v.NodeType() {
-				err = fmt.Errorf(ReasonIncompatibleNodeTypes, n.ID, v.ID())
+			if n.kind != NodeOmni && n.kind == v.NodeType() {
+				err = fmt.Errorf(ReasonIncompatibleNodeTypes, n.ID, v.(IElement).ID())
 				return
 			}
 		}
@@ -122,11 +123,11 @@ func (n *Node) OutputAdd(...INode) (err error) {
 }
 
 // OutputRemove :
-func (n *Node) OutputRemove(...INode) {
+func (n *Node) OutputRemove(values ...INode) (err error) {
 	if len(values) > 0 {
 		for _, v := range values {
-			if !elementExists(v.ID(), n.outputs) {
-				err = fmt.Errorf(ReasonConnectionInexist, n.ID, v.ID())
+			if !nodeExists(v.(IElement).ID(), n.outputs) {
+				err = fmt.Errorf(ReasonConnectionInexist, n.ID, v.(IElement).ID())
 				return
 			}
 		}
@@ -134,6 +135,7 @@ func (n *Node) OutputRemove(...INode) {
 			n.net.DisconnectNodes(n, v)
 		}
 	}
+	return
 }
 
 // OutputClear :
@@ -143,33 +145,33 @@ func (n *Node) OutputClear() {
 
 // IdenticWith :
 func (n *Node) IdenticWith(node INode) (result bool, reason string) {
-	if result, reason = n.Element.IsIdentic(&n1.(*Node).Element); !result {
+	if result, reason = n.IdenticWith(node); !result {
 		return
 	}
-	if node.GetInputCount() != len(n.inputs) {
+	if node.InputCount() != len(n.inputs) {
 		reason = "input length not equal"
-	} else if node.GetOutputCount() != len(n.outputs) {
+	} else if node.OutputCount() != len(n.outputs) {
 		reason = "output length not equal"
 	} else {
-		input := node.GetInputs()
+		input := node.Inputs()
 		for i, in := range n.inputs {
-			if in.(*Node).Element.GetID() != input[i].(*Node).Element.GetID() {
+			if in.(IElement).ID() != input[i].(IElement).ID() {
 				reason = fmt.Sprintf("input #%d not equal", i)
 				return
 			}
 		}
-		output := node.GetOutputs()
+		output := node.Outputs()
 		for i, out := range n.outputs {
-			if out.(*Node).Element.GetID() != output[i].(*Node).Element.GetID() {
+			if out.(IElement).ID() != output[i].(IElement).ID() {
 				reason = fmt.Sprintf("output #%d not equal", i)
 				return
 			}
 		}
 	}
-	result = result && (node.GetInterior() == n.interior)
-	if result && node.GetInterior() == n.interior {
+	result = result && (node.Interior() == n.interior)
+	if result && node.Interior() == n.interior {
 		if n.interior != nil {
-			if n1.GetInterior().(IElement).GetID() != n.interior.(IElement).GetID() {
+			if node.Interior().(IElement).ID() != n.interior.(IElement).ID() {
 				reason = "interior not equal"
 			}
 		}
@@ -178,9 +180,10 @@ func (n *Node) IdenticWith(node INode) (result bool, reason string) {
 }
 
 // NewNode :
-func NewNode(net INet, id, label, desc string, typ int) (result INode) {
+func NewNode(net INet, id, label, desc string, typ, kind int) (result INode) {
 	result = &Node{
 		Element:  *NewElement(net, id, label, desc, typ).(*Element),
+		kind:     kind,
 		inputs:   []INode{},
 		outputs:  []INode{},
 		interior: nil,

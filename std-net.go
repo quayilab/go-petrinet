@@ -111,7 +111,7 @@ func (n *Net) ConnectStateTransition(state IState, transition ITransition) (err 
 }
 
 // ConnectTransitionState :
-func (n *Net) ConnectTransitionState(state IState, transition ITransition) (err error) {
+func (n *Net) ConnectTransitionState(transition ITransition, state IState) (err error) {
 	err = state.(INode).InputAdd(transition.(INode))
 	return
 }
@@ -152,7 +152,7 @@ func (n *Net) IdenticWith(net INet) (identic bool, reason string) {
 	} else {
 		nodes := net.Nodes()
 		for i, node := range n.nodes {
-			if node.(*Node).Element.ID() != nodes[i].(IElement).ID() {
+			if node.(*Node).id != nodes[i].(*Node).id {
 				reason = fmt.Sprintf("node #%d not equal", i)
 				return
 			}
@@ -166,7 +166,7 @@ func (n *Net) IdenticWith(net INet) (identic bool, reason string) {
 		}
 		transitions := net.Transitions()
 		for i, transition := range n.transitions {
-			if transition.(*Transition).Node.Element.ID() != transitions[i].(IElement).ID() {
+			if transition.(IElement).ID() != transitions[i].(IElement).ID() {
 				reason = fmt.Sprintf("transition #%d not equal", i)
 				return
 			}
@@ -192,22 +192,22 @@ func (n *Net) Pause() {
 
 // Running :
 func (n *Net) Running() (result bool) {
-
+	return
 }
 
 // Ready :
 func (n *Net) Ready() (result bool) {
-
+	return
 }
 
 // DeadLock :
 func (n *Net) DeadLock() (result bool) {
-
+	return
 }
 
 // Execute :
 func (n *Net) Execute(transition ITransition) (result bool, err error) {
-
+	return
 }
 
 // NewNet :
@@ -217,6 +217,6 @@ func NewNet(id, label, desc string) (result INet) {
 		states:      []IState{},
 		transitions: []ITransition{},
 	}
-	result.(*Net).Element = *NewElement(nil, id, label, desc, ElementTypeNet).(*Element)
+	result.(*Net).Element = *NewElement(nil, id, label, desc, ElementNet).(*Element)
 	return
 }

@@ -28,6 +28,15 @@ const (
 )
 
 const (
+	// StorageChanel :
+	StorageChanel = iota
+	// StorageStack :
+	StorageStack
+	// StorageMultiset :
+	StorageMultiset
+)
+
+const (
 	// EventStateCreate :
 	EventStateCreate = `creating state "%s"`
 	// EventStateAdd :
@@ -108,7 +117,17 @@ type NodeIndex = int
 
 func elementExists(id string, collections []IElement) (result bool) {
 	for _, e := range collections {
-		if e.ID() == id {
+		if e.(IElement).ID() == id {
+			result = true
+			return
+		}
+	}
+	return
+}
+
+func nodeExists(id string, collections []INode) (result bool) {
+	for _, e := range collections {
+		if e.(IElement).ID() == id {
 			result = true
 			return
 		}
