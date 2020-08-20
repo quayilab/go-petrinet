@@ -6,7 +6,7 @@
 This repo is in very early stage (pre-pre Alpha) and it's in heavy redesign/recode. Please expect:
 + Error all over the place
 + no comment/in code documentation
-+ API changes inconsistencies
++ API changes/inconsistencies
 + Unused vars/type/function etc.
 + no timeline for all of this to be done
 
